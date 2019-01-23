@@ -8,7 +8,7 @@ class Auth0User {
   DateTime expiresDate;
   String tokenType;
 
-  Auth0User.fromMap(Map<dynamic, dynamic> snapshot)
+  Auth0User.fromJson(Map<dynamic, dynamic> snapshot)
       : accessToken = snapshot['access_token'],
         refreshToken = snapshot['refresh_token'],
         idToken = snapshot['id_token'],

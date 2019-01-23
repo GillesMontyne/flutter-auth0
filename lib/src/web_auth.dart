@@ -140,13 +140,11 @@ class WebAuth {
 
   Future<dynamic> resetPassword({
     @required String email,
-    @required String connection,
   }) =>
       restorePassword(
         this.clientId,
         this.domain,
         email: email,
-        connection: connection,
       );
 
   Future<String> delegate({

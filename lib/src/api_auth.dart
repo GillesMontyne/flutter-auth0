@@ -28,17 +28,15 @@ class Auth0 {
   Future<Auth0User> passwordRealm({
     @required String username,
     @required String password,
-    @required String realm,
     String audience,
     String scope = 'openid email profile token id id_token offline_access',
   }) async {
-    dynamic request = await http.post(
+    dynamic response = await http.post(
       Uri.encodeFull(Constant.passwordRealm(this.domain)),
       headers: Constant.headers,
       body: jsonEncode(
         {
-          'grant_type': 'http://auth0.com/oauth/grant-type/password-realm',
-          'realm': realm,
+          'grant_type': 'password',
           'username': username,
           'password': password,
           'audience': audience,
@@ -47,8 +45,13 @@ class Auth0 {
         },
       ),
     );
-    Map<String, dynamic> response = await jsonDecode(request.body);
-    return Auth0User.fromMap(response);
+    final res = json.decode(response.body);
+    if (response.statusCode == 200) {
+      // If server returns an OK response, parse the JSON
+      return Auth0User.fromJson(res);
+    } else {
+      throw Auth0Exeption(name: "Login Failed", description: res["error_description"]);
+    }
   }
 
   Future<dynamic> userInfo({
@@ -67,7 +70,6 @@ class Auth0 {
         this.clientId,
         this.domain,
         email: email,
-        connection: connection,
       );
 
   Future<String> delegate({

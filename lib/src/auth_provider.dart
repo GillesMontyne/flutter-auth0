@@ -65,13 +65,15 @@ Future<dynamic> restorePassword(
   String clientId,
   String domain, {
   @required String email,
-  @required String connection,
 }) async {
-  http.Response response = await http.post(
-      Uri.encodeFull(Constant.changePassword(domain)),
-      headers: Constant.headers,
-      body: jsonEncode(
-          {'client_id': clientId, 'email': email, 'connection': connection}));
+  http.Response response =
+      await http.post(Uri.encodeFull(Constant.changePassword(domain)),
+          headers: Constant.headers,
+          body: jsonEncode({
+            'client_id': clientId,
+            'email': email,
+            'connection': 'Username-Password-Authentication'
+          }));
   dynamic _body =
       response.statusCode == 200 ? response.body : json.decode(response.body);
   if (response.statusCode == 200) {
@@ -79,9 +81,8 @@ Future<dynamic> restorePassword(
         .contains('We\'ve just sent you an email to reset your password');
   } else {
     throw new Auth0Exeption(
-        name: 'User Reset Password Error',
-        description:
-            _body['error'] != null ? _body['error'] : _body['description']);
+        name: 'Password Reset Failed',
+        description: _body['error'] ?? _body['description']);
   }
 }
 
