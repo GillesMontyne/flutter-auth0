@@ -64,7 +64,6 @@ class Auth0 {
 
   Future<dynamic> resetPassword({
     @required String email,
-    @required String connection,
   }) =>
       restorePassword(
         this.clientId,
