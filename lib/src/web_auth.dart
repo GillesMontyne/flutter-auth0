@@ -61,7 +61,7 @@ class WebAuth {
         print("EXPECTED STATE");
         print(expectedState.toString());
         String authorizeUrl = // &audience=$audience
-            'https://${this.domain}/authorize?scope=$scope&clientId=${this.clientId}&response_type=code&redirect_uri=$redirectUri&state=$expectedState&code_challenge_method=$codeChallengeMethod&code_challenge=$codeChallenge&client_id=${this.clientId}&auth0Client=$codeChallenge';
+            'https://${this.domain}/authorize?scope=$scope&clientId=${this.clientId}&response_type=code&redirect_uri=$redirectUri&state=$expectedState&code_challenge_method=$codeChallengeMethod&code_challenge=$codeChallenge&client_id=${this.clientId}&auth0Client=$codeChallenge&connection=$connection';
         print("AUTHORIZE URL");
         print(authorizeUrl.toString());
         String accessToken = await _channel
