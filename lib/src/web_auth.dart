@@ -36,8 +36,11 @@ class WebAuth {
   Future<dynamic> authorize({
     String state,
     String nonce,
+    @Required("'audience' needed to be OIDC Conformant")
     dynamic audience,
+    @Required()
     dynamic scope,
+    @Required("Specify 'connection': facebook, linkedin")
     String connection,
   }) {
     return _channel.invokeMethod('parameters', {}).then((dynamic params) async {
@@ -60,8 +63,8 @@ class WebAuth {
         String expectedState = state ?? _state;
         print("EXPECTED STATE");
         print(expectedState.toString());
-        String authorizeUrl = // &audience=$audience
-            'https://${this.domain}/authorize?scope=$scope&clientId=${this.clientId}&response_type=code&redirect_uri=$redirectUri&state=$expectedState&code_challenge_method=$codeChallengeMethod&code_challenge=$codeChallenge&client_id=${this.clientId}&auth0Client=$codeChallenge&connection=$connection';
+        String authorizeUrl =
+            'https://${this.domain}/authorize?audience=$audience&scope=$scope&clientId=${this.clientId}&response_type=code&redirect_uri=$redirectUri&state=$expectedState&code_challenge_method=$codeChallengeMethod&code_challenge=$codeChallenge&client_id=${this.clientId}&auth0Client=$codeChallenge&connection=$connection';
         print("AUTHORIZE URL");
         print(authorizeUrl.toString());
         String accessToken = await _channel
