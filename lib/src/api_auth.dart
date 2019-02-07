@@ -85,7 +85,7 @@ class Auth0 {
   Future<dynamic> createUser({
     @required String email,
     @required String password,
-    @required String connection,
+    String connection,
     String username,
     String metadata,
     bool waitResponse = false,
@@ -98,7 +98,6 @@ class Auth0 {
         connection: connection,
         username: username,
         metadata: metadata,
-        waitResponse: waitResponse,
       );
 
   Future<dynamic> refreshToken({

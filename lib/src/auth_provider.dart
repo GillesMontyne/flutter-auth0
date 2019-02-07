@@ -123,7 +123,6 @@ Future<String> delegateToken(
   * @param {String} password user's password
   * @param {String} connection name of the database connection where to create the user
   * @param {String} metadata additional user information that will be stored in `user_metadata`
-  * @param {Boolean} waitResponse control variable for wait to response or no
   * @returns {Promise}
   *
 */
@@ -132,45 +131,45 @@ Future<dynamic> newUser(
   String domain, {
   @required String email,
   @required String password,
-  @required String connection,
+  String connection,
   String username,
   String metadata,
-  bool waitResponse = false,
 }) async {
-  if (waitResponse) {
-    http.Response response = await http.post(
-      Uri.encodeFull(Constant.createUser(domain)),
-      headers: Constant.headers,
-      body: jsonEncode(
-        {
-          'client_id': clientId,
-          'email': email,
-          'password': password,
-          'connection': connection,
-          'username': username != null ? username : email.split('@')[0],
-          'user_metadata': metadata,
-        },
-      ),
-    );
-    dynamic body = json.decode(response.body);
-    if (response.statusCode == 200) {
-      return body;
-    } else {
-      throw body['message'];
-    }
-  } else {
-    return http.post(
-      Uri.encodeFull(Constant.createUser(domain)),
-      headers: Constant.headers,
-      body: jsonEncode({
+  http.Response response = await http.post(
+    Uri.encodeFull(Constant.createUser(domain)),
+    headers: Constant.headers,
+    body: jsonEncode(
+      {
         'client_id': clientId,
         'email': email,
         'password': password,
-        'connection': connection,
-        'username': username != null ? username : email.split('@')[0],
+        'connection': connection ?? "Username-Password-Authentication",
+        'username': username ?? email.split('@')[0],
         'user_metadata': metadata,
-      }),
-    );
+      },
+    ),
+  );
+
+  final res = json.decode(response.body);
+  if (response.statusCode == 200) {
+    // If server returns an OK response, parse the JSON
+    return res;
+  } else {
+    print(res);
+    String name = "Registration failed";
+    String description = "Something went wrong, please try again later.";
+    if (res != null && res["error"] != null) {
+      description = res["error"];
+    } else if (res != null && res["description"] != null) {
+      if (res["policy"] != null) {
+        name = "Password doesn\'t meet minimum requirements";
+        description = '\n\n' + res["policy"];
+      } else {
+        name = "Already registered";
+        description = res["description"];
+      }
+    }
+    throw Auth0Exeption(name: name, description: description);
   }
 }
 

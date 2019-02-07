@@ -191,7 +191,6 @@ class WebAuth {
         connection: connection,
         username: username,
         metadata: metadata,
-        waitResponse: waitResponse,
       );
 
   Future<dynamic> refreshToken({
