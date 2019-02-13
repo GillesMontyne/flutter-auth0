@@ -184,18 +184,20 @@ Future<dynamic> refresh(
   String domain, {
   @required String refreshToken,
 }) async {
-  try {
-    http.Response response =
-        await http.post(Uri.encodeFull(Constant.passwordRealm(domain)),
-            headers: Constant.headers,
-            body: jsonEncode({
-              'client_id': clientId,
-              'refresh_token': refreshToken,
-              'grant_type': 'refresh_token'
-            }));
-    return jsonDecode(response.body);
-  } catch (e) {
-    throw new Auth0Exeption(
-        name: 'Refresh Token Error', description: e.message);
+  http.Response response =
+      await http.post(Uri.encodeFull(Constant.passwordRealm(domain)),
+          headers: Constant.headers,
+          body: jsonEncode({
+            'client_id': clientId,
+            'refresh_token': refreshToken,
+            'grant_type': 'refresh_token'
+          }));
+  final res = json.decode(response.body);
+  if (response.statusCode == 200) {
+    // If server returns an OK response, parse the JSON
+    return Auth0User.fromJson(res);
+  } else {
+    throw Auth0Exeption(
+        name: "Refresh Token Failed", description: res["error_description"]?? "unknown error");
   }
 }
