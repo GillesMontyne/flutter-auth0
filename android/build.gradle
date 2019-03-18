@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
     }
 }
 
@@ -33,6 +33,6 @@ android {
     }
     dependencies{
         implementation "com.android.support:support-core-utils:27.1.1"
-        implementation 'com.android.support:customtabs:26.1.0'
+        implementation 'com.android.support:customtabs:27.1.1'
     }
 }
